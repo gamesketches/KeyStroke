@@ -10,7 +10,7 @@ public class LetterKey : MonoBehaviour {
 	public float pressAnimationTime;
 	public float pressScale;
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		childText = GetComponentInChildren<Text>();
 		childText.text = currentKey.ToString();
 	}
