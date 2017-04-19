@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class LetterKey : MonoBehaviour {
 
 	public KeyCode currentKey;
+	public KeyCode baseKey;
 	Text childText;
 	public float pressAnimationTime;
 	public float pressScale;
@@ -25,6 +26,10 @@ public class LetterKey : MonoBehaviour {
 	public void SetKey(KeyCode newKey) {
 		currentKey = newKey;
 		childText.text = currentKey.ToString();
+	}
+
+	public void SetKeyLabel(string letter) {
+		childText.text = letter;
 	}
 
 	IEnumerator Type() {
