@@ -25,7 +25,7 @@ public class KeyboardManager : MonoBehaviour {
 		allKeys = new Dictionary<KeyCode, LetterKey>();
 		foreach(string line in new string[] {"QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"}) {
 			for(int i = 0; i < line.Length; i++) {
-				KeyCode keyCode = ParseKeyCode(line[i].ToString());//(KeyCode)System.Enum.Parse(typeof(KeyCode), line[i].ToString());
+				KeyCode keyCode = ParseKeyCode(line[i].ToString());
 				keyCodeKeys.Add(keyCode, line[i].ToString());
 				GameObject temp = Instantiate(Resources.Load<GameObject>("LetterKey"), canvas.transform);
 				temp.GetComponent<RectTransform>().position = startPos;
@@ -42,7 +42,13 @@ public class KeyboardManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(Input.inputString.Length > 0) {
+		if(Input.GetKeyDown(KeyCode.Backspace)) {
+			outputString.text = outputString.text.Remove(outputString.text.Length - 1);
+		}
+		else if(Input.GetKeyDown(KeyCode.Space)) {
+			outputString.text += " ";
+		}
+		else if(!Input.GetKeyDown(KeyCode.Return) && Input.inputString.Length > 0) {
 			outputString.text += keyCodeKeys[ParseKeyCode(Input.inputString[0].ToString())];
 			SwapKeys();
 		}
