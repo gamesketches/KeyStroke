@@ -7,13 +7,15 @@ public class InputChecker : MonoBehaviour {
 
 	public class Sentence {
 		public string call;
-		public string[] wordsToCheckFor;
+		public string response;
+		public string wordToCheckFor;
 		public string[] missedResponses;
 		public float responseTime;
 
-		public Sentence(string newCall, string[] listOfWords, string[] responses, float time) {
+		public Sentence(string newCall, string newResponse, string checkWord, string[] responses, float time) {
 			call = newCall;
-			wordsToCheckFor = listOfWords;
+			response = newResponse;
+			wordToCheckFor = checkWord;
 			missedResponses = responses;
 			responseTime = time;
 		}
@@ -24,51 +26,60 @@ public class InputChecker : MonoBehaviour {
 	public string userName;
 	Sentence currentMessage;
 	public Text inputtedText;
+	public Text leadText;
+	public float chatDelay;
+	AudioSource messageReceived;
+	AudioSource messageSent;
 	// Use this for initialization
 	void Start () {
 		chatLog = new Queue<Sentence>();
 		LoadScript();
 		currentMessage = chatLog.Dequeue();
-		//chatText = GetComponent<Text>();
+		messageReceived = GetComponent<AudioSource>();
+		messageSent = GetComponents<AudioSource>()[1];
 		SendMessage();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if(Input.GetKeyDown(KeyCode.Return)) {
-			chatText.text += "\nMe: " + inputtedText.text;
+			messageSent.Play();
+			chatText.text += "\n<color=red>Me</color>: " + inputtedText.text.ToLower();
 			if(CheckMessage()) {
 				currentMessage = chatLog.Dequeue();
+				Invoke("SendMessage", 2 + chatDelay * Random.value);
 				SendMessage();
 			}
 			else {
-				SendMissedMessage();
+				Invoke("SendMissedMessage", 2 + chatDelay * Random.value);
 			}
 			inputtedText.text = "";
 		}
 	}
 
 	void SendMessage() {
-		chatText.text += "\n" + userName + ": " + currentMessage.call;
+		chatText.text += "\n<color=blue>" + userName + "</color>: " + currentMessage.call;
+		leadText.text = currentMessage.response.ToLower();
+		messageReceived.Play();
 	}
 
 	void SendMissedMessage() {
-		chatText.text += "\n" + userName + ": " + currentMessage.missedResponses[Random.Range(0,currentMessage.missedResponses.Length - 1)];
+		chatText.text += "\n<color=blue>" + userName + "</color>: " + currentMessage.missedResponses[Random.Range(0,currentMessage.missedResponses.Length - 1)];
 	}
 
 	bool CheckMessage() {
 		string[] words = inputtedText.text.Split(" ".ToCharArray());
 		foreach(string word in words) {
-			foreach(string checkingWord in currentMessage.wordsToCheckFor) {
-				if(word.ToLower() == checkingWord.ToLower()) {
+				if(word.ToLower() == currentMessage.wordToCheckFor.ToLower()) {
 					return true;
-				}
 			}
 		}
 		return false;
 	}
 
 	void LoadScript() {
-		chatLog.Enqueue(new Sentence("Hey", new string[] {"Hey", "Hi", "yo", "sup"}, new string[] {"huh?", "what?"}, 1));
+		chatLog.Enqueue(new Sentence("hey", "hey", "hey", new string[] {"huh?", "what?"}, 1));
+		chatLog.Enqueue(new Sentence("how are u?", "alright", "alright", new string[] {"?"}, 1));
+		chatLog.Enqueue(new Sentence())
 	}
 }

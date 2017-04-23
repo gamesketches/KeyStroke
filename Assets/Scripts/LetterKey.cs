@@ -10,8 +10,12 @@ public class LetterKey : MonoBehaviour {
 	Text childText;
 	public float pressAnimationTime;
 	public float pressScale;
+	public static float revertTime;
+	float revertTimer;
 	// Use this for initialization
 	void Awake () {
+		revertTime = 1;
+		revertTimer = -1;
 		childText = GetComponentInChildren<Text>();
 		childText.text = currentKey.ToString();
 	}
@@ -21,11 +25,18 @@ public class LetterKey : MonoBehaviour {
 		if(Input.GetKeyDown(currentKey)) {
 			StartCoroutine(Type());
 		}
+		if(revertTimer > 0) {
+			revertTimer -= Time.deltaTime;
+			if(revertTimer <= 0) {
+				SetKey(baseKey);
+			}
+		}
 	}
 
 	public void SetKey(KeyCode newKey) {
 		currentKey = newKey;
 		childText.text = currentKey.ToString();
+		revertTimer = revertTime * Random.value; 
 	}
 
 	public void SetKeyLabel(string letter) {

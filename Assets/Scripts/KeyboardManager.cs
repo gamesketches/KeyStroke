@@ -14,13 +14,15 @@ public class KeyboardManager : MonoBehaviour {
 	Dictionary<KeyCode, LetterKey> allKeys;
 
 	public Text outputString;
+	float chanceOfKeyChange;
 
 	// Use this for initialization
 	void Start () {
+		chanceOfKeyChange = 0;
 		int xOffset = 50;
 		int yOffset = 30;
 		GameObject canvas = GameObject.Find("Canvas");
-		Vector3 startPos = new Vector3(100, 80, 0);
+		Vector3 startPos = new Vector3(350, 120, 0);
 		keyCodeKeys = new Dictionary<KeyCode, string>();
 		allKeys = new Dictionary<KeyCode, LetterKey>();
 		foreach(string line in new string[] {"QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"}) {
@@ -31,6 +33,7 @@ public class KeyboardManager : MonoBehaviour {
 				temp.GetComponent<RectTransform>().position = startPos;
 				LetterKey newLetterKey = temp.GetComponent<LetterKey>();
 				newLetterKey.SetKey(keyCode);
+				newLetterKey.baseKey = keyCode;
 				allKeys.Add(keyCode, newLetterKey);
 
 				startPos.x += xOffset;
@@ -49,8 +52,11 @@ public class KeyboardManager : MonoBehaviour {
 			outputString.text += " ";
 		}
 		else if(!Input.GetKeyDown(KeyCode.Return) && Input.inputString.Length > 0) {
-			outputString.text += keyCodeKeys[ParseKeyCode(Input.inputString[0].ToString())];
-			SwapKeys();
+			outputString.text += keyCodeKeys[ParseKeyCode(Input.inputString[0].ToString())].ToLower();
+			chanceOfKeyChange += 0.001f;
+			if(Random.value < chanceOfKeyChange){ 
+				SwapKeys();
+			}
 		}
 	}
 
