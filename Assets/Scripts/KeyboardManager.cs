@@ -22,7 +22,7 @@ public class KeyboardManager : MonoBehaviour {
 		int xOffset = 50;
 		int yOffset = 30;
 		GameObject canvas = GameObject.Find("Canvas");
-		Vector3 startPos = new Vector3(350, 120, 0);
+		Vector3 startPos = new Vector3(370, 100, 0);
 		keyCodeKeys = new Dictionary<KeyCode, string>();
 		allKeys = new Dictionary<KeyCode, LetterKey>();
 		foreach(string line in new string[] {"QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"}) {
@@ -53,7 +53,7 @@ public class KeyboardManager : MonoBehaviour {
 		}
 		else if(!Input.GetKeyDown(KeyCode.Return) && Input.inputString.Length > 0) {
 			outputString.text += keyCodeKeys[ParseKeyCode(Input.inputString[0].ToString())].ToLower();
-			chanceOfKeyChange += 0.001f;
+			chanceOfKeyChange += 0.005f;
 			if(Random.value < chanceOfKeyChange){ 
 				SwapKeys();
 			}
@@ -68,10 +68,12 @@ public class KeyboardManager : MonoBehaviour {
 		} while(firstLetter == secondLetter);
 		LetterKey firstLetterKey = allKeys[ParseKeyCode(firstLetter.ToString())];
 		LetterKey secondLetterKey = allKeys[ParseKeyCode(secondLetter.ToString())];
-		firstLetterKey.SetKeyLabel(secondLetter);
-		secondLetterKey.SetKeyLabel(firstLetter);
+		firstLetterKey.SetKey(ParseKeyCode(secondLetter));
+		secondLetterKey.SetKey(ParseKeyCode(firstLetter));
 		keyCodeKeys[ParseKeyCode(firstLetter)] = secondLetter;
 		keyCodeKeys[ParseKeyCode(secondLetter)] = firstLetter;
+		allKeys[ParseKeyCode(firstLetter.ToString())] = secondLetterKey;
+		allKeys[ParseKeyCode(secondLetter.ToString())] = firstLetterKey;
 	}
 
 	KeyCode ParseKeyCode(string letter) {

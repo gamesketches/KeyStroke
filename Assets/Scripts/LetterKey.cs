@@ -25,18 +25,18 @@ public class LetterKey : MonoBehaviour {
 		if(Input.GetKeyDown(currentKey)) {
 			StartCoroutine(Type());
 		}
-		if(revertTimer > 0) {
+/*		if(revertTimer > 0) {
 			revertTimer -= Time.deltaTime;
 			if(revertTimer <= 0) {
 				SetKey(baseKey);
 			}
-		}
+		}*/
 	}
 
 	public void SetKey(KeyCode newKey) {
 		currentKey = newKey;
 		childText.text = currentKey.ToString();
-		revertTimer = revertTime * Random.value; 
+		//revertTimer = revertTime * Random.value; 
 	}
 
 	public void SetKeyLabel(string letter) {
