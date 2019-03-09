@@ -51,8 +51,11 @@ public class KeyboardManager : MonoBehaviour {
 		else if(Input.GetKeyDown(KeyCode.Space)) {
 			outputString.text += " ";
 		}
+		else if(Input.GetKeyDown(KeyCode.Escape)) {
+			UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+		}
 		else if(!Input.GetKeyDown(KeyCode.Return) && Input.inputString.Length > 0) {
-			outputString.text += keyCodeKeys[ParseKeyCode(Input.inputString[0].ToString())].ToLower();
+			//outputString.text += keyCodeKeys[ParseKeyCode(Input.inputString[0].ToString())].ToLower();
 			chanceOfKeyChange += 0.005f;
 			if(Random.value < chanceOfKeyChange){ 
 				SwapKeys();
@@ -61,7 +64,17 @@ public class KeyboardManager : MonoBehaviour {
 	}
 
 	void SwapKeys() {
-		string firstLetter = "QWERTYUIOPASDFGHJKLZXCVBNM"[Random.Range(0, 26)].ToString();
+		GameObject[] keys = GameObject.FindGameObjectsWithTag("key");
+		int first = Random.Range(0, 26);
+		int second;
+		do {
+			second = Random.Range(0, 26);
+		} while(first == second);
+		KeyCode temp = keys[second].GetComponent<LetterKey>().currentKey;
+		keys[second].GetComponent<LetterKey>().SetKey(keys[first].GetComponent<LetterKey>().currentKey);
+		keys[first].GetComponent<LetterKey>().SetKey(temp); 
+		Debug.Log("switched " + keys[first].GetComponent<LetterKey>().currentKey.ToString() + " and " + keys[second].GetComponent<LetterKey>().currentKey.ToString());
+		/*string firstLetter = "QWERTYUIOPASDFGHJKLZXCVBNM"[Random.Range(0, 26)].ToString();
 		string secondLetter;
 		do {
 			secondLetter = "QWERTYUIOPASDFGHJKLZXCVBNM"[Random.Range(0, 26)].ToString();
@@ -71,9 +84,7 @@ public class KeyboardManager : MonoBehaviour {
 		firstLetterKey.SetKey(ParseKeyCode(secondLetter));
 		secondLetterKey.SetKey(ParseKeyCode(firstLetter));
 		keyCodeKeys[ParseKeyCode(firstLetter)] = secondLetter;
-		keyCodeKeys[ParseKeyCode(secondLetter)] = firstLetter;
-		allKeys[ParseKeyCode(firstLetter.ToString())] = secondLetterKey;
-		allKeys[ParseKeyCode(secondLetter.ToString())] = firstLetterKey;
+		keyCodeKeys[ParseKeyCode(secondLetter)] = firstLetter;*/
 	}
 
 	KeyCode ParseKeyCode(string letter) {

@@ -49,7 +49,7 @@ public class InputChecker : MonoBehaviour {
 
 	public void MessageEntered() {
 		messageSent.Play();
-		chatText.text += "\n<color=red>Me</color>: " + inputtedText.text.ToLower();
+		chatText.text += "\n<color=red>DADMAN</color>: " + inputtedText.text.ToLower();
 		if(CheckMessage()) {
 				SetCurrentMessage();
 				Invoke("SendMessage", currentMessage.responseTime +chatDelay * Random.value);

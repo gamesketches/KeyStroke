@@ -12,17 +12,19 @@ public class LetterKey : MonoBehaviour {
 	public float pressScale;
 	public static float revertTime;
 	float revertTimer;
+	Text outputString;
 	// Use this for initialization
 	void Awake () {
 		revertTime = 1;
 		revertTimer = -1;
+		outputString = GameObject.Find("inputText").GetComponent<Text>();
 		childText = GetComponentInChildren<Text>();
 		childText.text = currentKey.ToString();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetKeyDown(currentKey)) {
+		if(Input.GetKeyDown(baseKey)) {
 			StartCoroutine(Type());
 		}
 /*		if(revertTimer > 0) {
@@ -44,6 +46,7 @@ public class LetterKey : MonoBehaviour {
 	}
 
 	IEnumerator Type() {
+		outputString.text += currentKey.ToString().ToLower();
 		Vector3 startingScale = transform.localScale;
 		Vector3 endScale = startingScale * pressScale;
 		for(float t = 0; t < pressAnimationTime * 2; t += Time.deltaTime) {
