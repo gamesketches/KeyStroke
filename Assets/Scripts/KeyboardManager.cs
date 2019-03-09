@@ -74,17 +74,9 @@ public class KeyboardManager : MonoBehaviour {
 		keys[second].GetComponent<LetterKey>().SetKey(keys[first].GetComponent<LetterKey>().currentKey);
 		keys[first].GetComponent<LetterKey>().SetKey(temp); 
 		Debug.Log("switched " + keys[first].GetComponent<LetterKey>().currentKey.ToString() + " and " + keys[second].GetComponent<LetterKey>().currentKey.ToString());
-		/*string firstLetter = "QWERTYUIOPASDFGHJKLZXCVBNM"[Random.Range(0, 26)].ToString();
-		string secondLetter;
-		do {
-			secondLetter = "QWERTYUIOPASDFGHJKLZXCVBNM"[Random.Range(0, 26)].ToString();
-		} while(firstLetter == secondLetter);
-		LetterKey firstLetterKey = allKeys[ParseKeyCode(firstLetter.ToString())];
-		LetterKey secondLetterKey = allKeys[ParseKeyCode(secondLetter.ToString())];
-		firstLetterKey.SetKey(ParseKeyCode(secondLetter));
-		secondLetterKey.SetKey(ParseKeyCode(firstLetter));
-		keyCodeKeys[ParseKeyCode(firstLetter)] = secondLetter;
-		keyCodeKeys[ParseKeyCode(secondLetter)] = firstLetter;*/
+		if(LetterKey.revertTime < 10) 
+			LetterKey.revertTime += Random.value;
+		ConfirmKeyboardParity();
 	}
 
 	KeyCode ParseKeyCode(string letter) {
