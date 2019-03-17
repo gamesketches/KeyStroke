@@ -79,6 +79,17 @@ public class KeyboardManager : MonoBehaviour {
 		ConfirmKeyboardParity();
 	}
 
+	void ConfirmKeyboardParity() {
+		List<KeyCode> keysFound = new List<KeyCode>();
+		foreach(KeyValuePair<KeyCode, LetterKey> key in allKeys) {
+			if(keysFound.IndexOf(key.Value.currentKey) == -1) {
+				keysFound.Add(key.Value.currentKey);
+			} else {
+				key.Value.RevertKey();
+			}
+		}
+	}
+
 	KeyCode ParseKeyCode(string letter) {
 		return (KeyCode)System.Enum.Parse(typeof(KeyCode), letter.ToUpper());
 	}

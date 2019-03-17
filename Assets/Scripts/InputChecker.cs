@@ -28,6 +28,8 @@ public class InputChecker : MonoBehaviour {
 	public Text inputtedText;
 	public Text leadText;
 	public float chatDelay;
+	public Text typingStatus;
+	public int WPM;
 	AudioSource messageReceived;
 	AudioSource messageSent;
 	// Use this for initialization
@@ -37,7 +39,9 @@ public class InputChecker : MonoBehaviour {
 		currentMessage = chatLog.Dequeue();
 		messageReceived = GetComponent<AudioSource>();
 		messageSent = GetComponents<AudioSource>()[1];
-		SendMessage();
+		typingStatus.text = userName + " is typing...";
+		typingStatus.gameObject.SetActive(false);
+		StartCoroutine(SendMessage());
 	}
 	
 	// Update is called once per frame
@@ -52,27 +56,50 @@ public class InputChecker : MonoBehaviour {
 		chatText.text += "\n<color=red>DADMAN</color>: " + inputtedText.text.ToLower();
 		if(CheckMessage()) {
 				SetCurrentMessage();
-				Invoke("SendMessage", currentMessage.responseTime +chatDelay * Random.value);
+				StartCoroutine(SendMessage());
+				//Invoke("SendMessage", currentMessage.responseTime +chatDelay * Random.value);
 				//SendMessage();
 			}
 			else {
-				Invoke("SendMissedMessage", currentMessage.responseTime + chatDelay * Random.value);
+				//Invoke("SendMissedMessage", currentMessage.responseTime + chatDelay * Random.value);
+				StartCoroutine(SendMissedMessage());
 			}
 			inputtedText.text = "";
 			leadText.text = "";
 	}
 
-	void SendMessage() {
+	IEnumerator SendMessage() {
+		yield return new WaitForSeconds(Mathf.Clamp(chatDelay * Random.value, 1, chatDelay));
+		bool stopTyping = Random.value < (currentMessage.responseTime / 10);
+		float characterSpeed = 1f / (((float)WPM * 5f) / 60f);
+		float typingTime = currentMessage.call.ToCharArray().Length * characterSpeed;
+		typingStatus.gameObject.SetActive(true);
+		if(stopTyping) {
+			float preTime = typingTime * Random.value;
+			yield return new WaitForSeconds(preTime);
+			typingStatus.gameObject.SetActive(false);
+			yield return new WaitForSeconds(1 * Random.value);
+			typingStatus.gameObject.SetActive(true);
+			yield return new WaitForSeconds(Mathf.Abs(typingTime - preTime));
+		}
+		else yield return new WaitForSeconds(typingTime);
+		typingStatus.gameObject.SetActive(false);
 		chatText.text += "\n<color=blue>" + userName + "</color>: " + currentMessage.call;
 		leadText.text = currentMessage.response.ToLower();
 		messageReceived.Play();
 	}
-
-	void SendMissedMessage() {
+		
+	IEnumerator SendMissedMessage() {
+		yield return new WaitForSeconds(Mathf.Clamp(chatDelay * Random.value, 1, chatDelay));
+		float characterSpeed = 1f / (((float)WPM * 5f) / 60f);
+		float typingTime = currentMessage.call.ToCharArray().Length * characterSpeed;
+		typingStatus.gameObject.SetActive(true);
+		yield return new WaitForSeconds(typingTime);
+		typingStatus.gameObject.SetActive(false);
 		chatText.text += "\n<color=blue>" + userName + "</color>: " + currentMessage.missedResponses[Random.Range(0,currentMessage.missedResponses.Length - 1)];
 		leadText.text = currentMessage.response.ToLower();
 	}
-
+		
 	void SetCurrentMessage() {
 		if(chatLog.Count > 0) {
 			currentMessage = chatLog.Dequeue();

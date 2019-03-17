@@ -54,4 +54,9 @@ public class LetterKey : MonoBehaviour {
 			yield return null;
 		}
 	}
+
+	public void RevertKey() {
+		SetKey(baseKey);
+		revertTimer = 0;
+	}
 }
