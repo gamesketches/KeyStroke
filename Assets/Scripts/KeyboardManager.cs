@@ -56,7 +56,7 @@ public class KeyboardManager : MonoBehaviour {
 		}
 		else if(!Input.GetKeyDown(KeyCode.Return) && Input.inputString.Length > 0) {
 			//outputString.text += keyCodeKeys[ParseKeyCode(Input.inputString[0].ToString())].ToLower();
-			chanceOfKeyChange += 0.005f;
+			chanceOfKeyChange += 0.001f;
 			if(Random.value < chanceOfKeyChange){ 
 				SwapKeys();
 			}
@@ -74,7 +74,7 @@ public class KeyboardManager : MonoBehaviour {
 		keys[second].GetComponent<LetterKey>().SetKey(keys[first].GetComponent<LetterKey>().currentKey);
 		keys[first].GetComponent<LetterKey>().SetKey(temp); 
 		Debug.Log("switched " + keys[first].GetComponent<LetterKey>().currentKey.ToString() + " and " + keys[second].GetComponent<LetterKey>().currentKey.ToString());
-		if(LetterKey.revertTime < 10) 
+		if(LetterKey.revertTime < 5) 
 			LetterKey.revertTime += Random.value;
 		ConfirmKeyboardParity();
 	}
