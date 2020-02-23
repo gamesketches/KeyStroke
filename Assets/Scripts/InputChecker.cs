@@ -34,14 +34,7 @@ public class InputChecker : MonoBehaviour {
 	AudioSource messageSent;
 	// Use this for initialization
 	void Start () {
-		chatLog = new Queue<Sentence>();
-		LoadScript();
-		currentMessage = chatLog.Dequeue();
-		messageReceived = GetComponent<AudioSource>();
-		messageSent = GetComponents<AudioSource>()[1];
-		typingStatus.text = userName + " is typing...";
-		typingStatus.gameObject.SetActive(false);
-		StartCoroutine(SendMessage(2.5f));
+		
 	}
 	
 	// Update is called once per frame
@@ -51,7 +44,20 @@ public class InputChecker : MonoBehaviour {
 		}
 	}
 
-	public void MessageEntered() {
+    public void StartGame()
+    {
+        chatLog = new Queue<Sentence>();
+        LoadScript();
+        currentMessage = chatLog.Dequeue();
+        messageReceived = GetComponent<AudioSource>();
+        messageSent = GetComponents<AudioSource>()[1];
+        typingStatus.text = userName + " is typing...";
+        typingStatus.gameObject.SetActive(false);
+        StartCoroutine(SendMessage(0.5f));
+
+    }
+
+    public void MessageEntered() {
 		messageSent.Play();
 		chatText.text += "\n<color=red>DADMAN</color>: " + inputtedText.text.ToLower();
 		if(CheckMessage()) {
