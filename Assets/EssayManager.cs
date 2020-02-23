@@ -31,13 +31,13 @@ public class EssayManager : MonoBehaviour
     public string userName;
     public string readerName;
     public InputChecker typingGame;
-    IM currentMessage;
+    IM curMessage;
     public Text inputtedText;
     public Text leadText;
     public float chatDelay;
     public Text typingStatus;
     public AudioSource messageReceived;
-    AudioSource messageSent;
+    public AudioSource messageSent;
     // Start is called before the first frame update
     void Start()
     {
@@ -49,7 +49,7 @@ public class EssayManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     IEnumerator PlayEssay()
@@ -58,11 +58,22 @@ public class EssayManager : MonoBehaviour
         yield return new WaitForSeconds(2.5f);
         while(chatLog.Count > 0)
         {
-            IM curMessage = chatLog.Dequeue();
-            yield return TypingStatus(curMessage.typingTime);
-            chatText.text += "\n<color=blue>" + curMessage.sender + "</color>: " + curMessage.content;
-            messageReceived.Play();
-            Debug.Log("waiting for " + curMessage.waitTime.ToString());
+            curMessage = chatLog.Dequeue();
+            if(curMessage.sender == readerName)
+            {
+                leadText.text = curMessage.content;
+                while (!Input.GetKeyDown(KeyCode.Return)) {
+                    if(Input.anyKeyDown) { leadText.text = ""; }
+                    yield return null;
+                }
+                chatText.text += "\n<color=red>" + curMessage.sender + "</color>: " + inputtedText.text;
+                inputtedText.text = "";
+                messageSent.Play();
+            } else {
+                yield return TypingStatus(curMessage.typingTime);
+                chatText.text += "\n<color=blue>" + curMessage.sender + "</color>: " + curMessage.content;
+                messageReceived.Play();
+            }
             yield return new WaitForSeconds(curMessage.waitTime);
         }
         typingGame.StartGame();
@@ -89,5 +100,6 @@ public class EssayManager : MonoBehaviour
         chatLog.Enqueue(new IM(userName, "and receive one back within seconds.", 60, 3f, false));
         chatLog.Enqueue(new IM(userName, "Communicating in real time gives messages the gravitas of proximity", 60, 0.3f, false));
         chatLog.Enqueue(new IM(userName, "it collapses physical distance", 60, 0.5f, false));
+        chatLog.Enqueue(new IM(readerName, "Type Anything", 0, 0, false));
     }
 }
